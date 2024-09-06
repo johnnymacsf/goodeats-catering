@@ -8,6 +8,7 @@ import useRegisterModal from "@/app/hooks/useRegisterModal";
 import useLoginModal from "@/app/hooks/useLoginModal";
 import { signOut } from "next-auth/react";
 import { SafeUser } from "@/app/types";
+import useListRestaurantModal from "@/app/hooks/listRestaurantModal";
 
 
 
@@ -20,17 +21,26 @@ const UserMenu: React.FC<UserMenuProps> = ({
 }) => {
     const registerModal = useRegisterModal();
     const loginModal = useLoginModal();
+    const listModal = useListRestaurantModal();
 
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleOpen = useCallback(()=>{
         setIsOpen((value) =>!value);
-    },[])
+    },[]);
+
+    const onList = useCallback(()=>{
+        if(!currentUser){
+            return loginModal.onOpen();
+        }
+        listModal.onOpen();
+
+    }, [currentUser, loginModal, listModal])
     return(
         <div className="relative">
             <div className="flex flex-row items-center gap-3">
-                <div onClick={()=> {}} className="hidden md:block text-sm font-semibold py-3 px-4 rounded-full hover:bg-neutral-100 transition cursor-pointer">
-                    
+                <div onClick={onList} className="hidden md:block text-sm font-semibold py-3 px-4 rounded-full hover:bg-neutral-100 transition cursor-pointer">
+                    List my restaurant
                 </div>
                 <div onClick={toggleOpen} className="p-4 md:py-1 md:px-2 border-[1px] border-neutral-200 flex flex-row items-center gap-3 rounded-full cursor-pointer hover:shadow-md transition">
                     <AiOutlineMenu />
@@ -48,7 +58,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
                             <MenuItem onClick={()=>{}} label="My reservations"/>
                             <MenuItem onClick={()=>{}} label="My favorites"/>
                             <MenuItem onClick={()=>{}} label="My restaurant listings"/>
-                            <MenuItem onClick={()=>{}} label="List my restaurant"/>
+                            <MenuItem onClick={listModal.onOpen} label="List my restaurant"/>
                             <hr />
                             <MenuItem onClick={()=>signOut()} label="Logout"/>
                         </>

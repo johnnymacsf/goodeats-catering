@@ -4,8 +4,9 @@ import Navbar from "./components/navbar/Navbar";
 import "./globals.css";
 import { Nunito } from 'next/font/google';
 import ToasterProvider from "./providers/ToasterProvider";
-import LoginModal from "./components/modals/LoginModal";
+import LoginModal from "./components/modals/LoginModal"; 
 import getCurrentUser from "./actions/getCurrentUser";
+import ListModal from "./components/modals/ListModal";
 
 export const metadata = {
   title: "GoodEats Catering",
@@ -27,6 +28,7 @@ export default async function RootLayout({
       <body className={font.className}>
         <ClientOnly>
           <ToasterProvider />
+          <ListModal />
           <LoginModal />
           <RegisterModal />
           <Navbar currentUser={currentUser}/>
