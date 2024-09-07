@@ -7,14 +7,14 @@ import Heading from "../Heading";
 import { categories } from "../navbar/Categories";
 import CategoryInput from "../inputs/CategoryInput";
 import { FieldValues, useForm } from "react-hook-form";
+import Counter from "../inputs/Counter";
 
 enum STEPS {
     CATEGORY = 0,
-    LOCATION = 1,
-    INFO = 2,
-    IMAGES = 3,
-    DESCRIPTION = 4,
-    PRICE = 5
+    INFO = 1,
+    IMAGES = 2,
+    DESCRIPTION = 3,
+    PRICE = 4
 }
 
 const ListModal = () => {
@@ -43,6 +43,7 @@ const ListModal = () => {
     });
 
     const category = watch('category');
+    const guestCount = watch('guestCount');
     const setCustomValue = (id: string, value: any) => {
         setValue(id, value, {
             shouldDirty: true,
@@ -84,12 +85,20 @@ const ListModal = () => {
             </div>
         </div>
     )
+    if(step ===  STEPS.INFO){
+        bodyContent = (
+            <div className="flex flex-col gap-8">
+                <Heading title="Share some basics about your restaurant" subtitle = "Add details about your catering menu, special deals, etc." />
+                <Counter title="Guests" subtitle="How many guests can you serve at a maximum?" value={guestCount} onChange={(value)=>setCustomValue('guestCount', value)}/>
+            </div>
+        )
+    }
     return(
         <Modal 
             title="List your restaurant"
             isOpen={listRestaurant.isOpen}
             onClose = {listRestaurant.onClose}
-            onSubmit={listRestaurant.onClose}
+            onSubmit={onNext}
             actionLabel={actionLabel}
             secondaryActionLabel = {secondaryActionLabel}
             secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}
