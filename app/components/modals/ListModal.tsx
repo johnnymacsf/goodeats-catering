@@ -8,6 +8,7 @@ import { categories } from "../navbar/Categories";
 import CategoryInput from "../inputs/CategoryInput";
 import { FieldValues, useForm } from "react-hook-form";
 import Counter from "../inputs/Counter";
+import ImageUpload from "../inputs/ImageUpload";
 
 enum STEPS {
     CATEGORY = 0,
@@ -44,6 +45,7 @@ const ListModal = () => {
 
     const category = watch('category');
     const guestCount = watch('guestCount');
+    const imageSrc = watch('imageSrc');
     const setCustomValue = (id: string, value: any) => {
         setValue(id, value, {
             shouldDirty: true,
@@ -93,6 +95,16 @@ const ListModal = () => {
             </div>
         )
     }
+
+    if(step === STEPS.IMAGES){
+        bodyContent = (
+            <div className="flex flex-col gap-8">
+                <Heading title="Add a photo of your restaurant!" subtitle="Show guests what your restaurant looks like"/>
+                <ImageUpload value={imageSrc} onChange={(value) => setCustomValue('imageSrc', value)}/>
+            </div>
+        )
+    }
+
     return(
         <Modal 
             title="List your restaurant"
