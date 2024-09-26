@@ -6,9 +6,13 @@ import { useMemo, useState } from "react";
 import Heading from "../Heading";
 import { categories } from "../navbar/Categories";
 import CategoryInput from "../inputs/CategoryInput";
-import { FieldValues, useForm } from "react-hook-form";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Counter from "../inputs/Counter";
 import ImageUpload from "../inputs/ImageUpload";
+import Input from "../inputs/Input";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 enum STEPS {
     CATEGORY = 0,
@@ -19,9 +23,11 @@ enum STEPS {
 }
 
 const ListModal = () => {
+    const listModal = useListRestaurantModal();
+    const router = useRouter();
     const [step, setStep] = useState(STEPS.CATEGORY);
     const listRestaurant = useListRestaurantModal();
-
+    const [isLoading, setIsLoading] = useState(false);
     const{
         register,
         handleSubmit,
@@ -59,6 +65,26 @@ const ListModal = () => {
     }
     const onNext = () => {
         setStep((value)=> value+1);
+    }
+
+    const onSubmit: SubmitHandler<FieldValues> = (data) => {
+        if(step !== STEPS.PRICE){
+            return onNext();
+        }
+        setIsLoading(true);
+        axios.post('/api/listings', data)
+        .then(()=>{
+            toast.success('Listing Created!');
+            router.refresh();
+            reset();
+            setStep(STEPS.CATEGORY);
+            listModal.onClose();
+        })
+        .catch(()=> {
+            toast.error('Something went wrong');
+        }).finally(()=>{
+            setIsLoading(false);
+        })
     }
 
     const actionLabel = useMemo(()=>{
@@ -105,12 +131,32 @@ const ListModal = () => {
         )
     }
 
+    if(step === STEPS.DESCRIPTION){
+        bodyContent = (
+            <div className="flex flex-col gap-8">
+                <Heading title="How would you describe your restaurant?" subtitle="Keep it short and sweet!"/>
+                <Input id = "title" label = "Title" disabled={isLoading} register={register} errors={errors} required/>
+                <hr />
+                <Input id = "description" label = "Description" disabled={isLoading} register={register} errors={errors} required/>
+            </div>
+        )
+    }
+
+    if(step === STEPS.PRICE){
+        bodyContent = (
+            <div className="flex flex-col gap-8">
+                <Heading title="Set your price" subtitle="How much do you charge per guest?" />
+                <Input id="price" label="Price" formatPrice={true} type="number" disabled={isLoading} register={register} errors={errors} required/>
+            </div>
+        )
+    }
+
     return(
         <Modal 
             title="List your restaurant"
             isOpen={listRestaurant.isOpen}
             onClose = {listRestaurant.onClose}
-            onSubmit={onNext}
+            onSubmit={handleSubmit(onSubmit)}
             actionLabel={actionLabel}
             secondaryActionLabel = {secondaryActionLabel}
             secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}
