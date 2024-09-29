@@ -9,6 +9,7 @@ import useLoginModal from "@/app/hooks/useLoginModal";
 import { signOut } from "next-auth/react";
 import { SafeUser } from "@/app/types";
 import useListRestaurantModal from "@/app/hooks/listRestaurantModal";
+import { useRouter } from "next/navigation";
 
 
 
@@ -22,6 +23,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
     const registerModal = useRegisterModal();
     const loginModal = useLoginModal();
     const listModal = useListRestaurantModal();
+    const router = useRouter();
 
     const [isOpen, setIsOpen] = useState(false);
 
@@ -54,7 +56,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
                     <div className="flex flex-col cursor-pointer">
                         {currentUser ? (
                             <>
-                            <MenuItem onClick={()=>{}} label="My caterings"/>
+                            <MenuItem onClick={()=>router.push("/caterings")} label="My caterings"/>
                             <MenuItem onClick={()=>{}} label="My reservations"/>
                             <MenuItem onClick={()=>{}} label="My favorites"/>
                             <MenuItem onClick={()=>{}} label="My restaurant listings"/>
