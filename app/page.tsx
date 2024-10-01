@@ -2,17 +2,12 @@ import Image from "next/image";
 import ClientOnly from "./components/ClientOnly";
 import Container from "./components/Container";
 import EmptyState from "./components/EmptyState";
-import getListings, { IListingsParams } from "./actions/getListings";
+import getListings from "./actions/getListings";
 import ListingCard from "./components/listings/ListingCard";
 import getCurrentUser from "./actions/getCurrentUser";
-import { Homemade_Apple } from "next/font/google";
 
-interface HomeProps{
-  searchParams: IListingsParams;
-}
-
-const Home = async ({ searchParams}: HomeProps) => {
-  const listings = await getListings(searchParams);
+export default async function Home() {
+  const listings = await getListings();
   const currentUser = await getCurrentUser();
 
   if(listings.length === 0){
@@ -40,5 +35,3 @@ const Home = async ({ searchParams}: HomeProps) => {
     </ClientOnly>
   );
 }
-
-export default Home;
