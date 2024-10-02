@@ -7,6 +7,7 @@ import ToasterProvider from "./providers/ToasterProvider";
 import LoginModal from "./components/modals/LoginModal"; 
 import getCurrentUser from "./actions/getCurrentUser";
 import ListModal from "./components/modals/ListModal";
+import SearchModal from "./components/modals/SearchModal";
 
 export const metadata = {
   title: "GoodEats Catering",
@@ -28,6 +29,7 @@ export default async function RootLayout({
       <body className={font.className}>
         <ClientOnly>
           <ToasterProvider />
+          <SearchModal />
           <ListModal />
           <LoginModal />
           <RegisterModal />
